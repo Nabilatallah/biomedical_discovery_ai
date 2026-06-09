@@ -11,11 +11,12 @@ New-Item -ItemType Directory -Path $out -Force | Out-Null
 
 $files = git -C $repoRoot ls-files | ForEach-Object {
     $path = Join-Path $repoRoot $_
-    if (Test-Path -LiteralPath $path -PathType Leaf) {
+    $item = Get-Item -LiteralPath $path -ErrorAction SilentlyContinue
+    if ($null -ne $item -and -not $item.PSIsContainer) {
         [ordered]@{
             path = $_
             sha256 = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash
-            size_bytes = (Get-Item -LiteralPath $path).Length
+            size_bytes = $item.Length
         }
     }
 }
