@@ -13,14 +13,18 @@ Run:
 from __future__ import annotations
 
 import os
-import secrets
-from typing import Any
+from dataclasses import dataclass
+from functools import lru_cache
+from typing import Any, Callable
 from uuid import UUID
 
+import jwt
 import psycopg
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
-from fastapi import Depends, FastAPI, Header, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from jwt import PyJWKClient
 from pydantic import BaseModel, Field
 
 
@@ -28,25 +32,121 @@ def database_url() -> str | None:
     return os.getenv("DATABASE_URL") or os.getenv("BDAI_DATABASE_URL")
 
 
-def configured_api_keys() -> set[str]:
-    raw = os.getenv("GOVERNANCE_API_KEYS", "")
-    return {key.strip() for key in raw.split(",") if key.strip()}
+bearer_scheme = HTTPBearer(auto_error=False)
 
 
-def require_write_api_key(x_governance_api_key: str | None = Header(default=None)) -> None:
-    keys = configured_api_keys()
-    if not keys:
+@dataclass(frozen=True)
+class Principal:
+    subject: str
+    issuer: str
+    audience: str
+    roles: frozenset[str]
+    scopes: frozenset[str]
+
+
+def required_auth_setting(name: str) -> str:
+    value = os.getenv(name)
+    if not value:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="GOVERNANCE_API_KEYS is not configured for write operations",
+            detail=f"{name} is not configured",
         )
-    if not x_governance_api_key or not any(
-        secrets.compare_digest(x_governance_api_key, key) for key in keys
-    ):
+    return value
+
+
+@lru_cache(maxsize=4)
+def jwks_client(jwks_uri: str) -> PyJWKClient:
+    return PyJWKClient(jwks_uri)
+
+
+def decode_token(token: str) -> dict[str, Any]:
+    issuer = required_auth_setting("GOVERNANCE_JWT_ISSUER")
+    audience = required_auth_setting("GOVERNANCE_JWT_AUDIENCE")
+    hs256_secret = os.getenv("GOVERNANCE_JWT_HS256_SECRET")
+    jwks_uri = os.getenv("GOVERNANCE_OIDC_JWKS_URI")
+
+    try:
+        if hs256_secret:
+            return jwt.decode(
+                token,
+                hs256_secret,
+                algorithms=["HS256"],
+                issuer=issuer,
+                audience=audience,
+            )
+        if jwks_uri:
+            signing_key = jwks_client(jwks_uri).get_signing_key_from_jwt(token)
+            return jwt.decode(
+                token,
+                signing_key.key,
+                algorithms=["RS256", "ES256"],
+                issuer=issuer,
+                audience=audience,
+            )
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Valid X-Governance-API-Key header is required",
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="GOVERNANCE_OIDC_JWKS_URI or GOVERNANCE_JWT_HS256_SECRET is not configured",
         )
+    except jwt.PyJWTError as exc:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid bearer token") from exc
+
+
+def claim_set(claims: dict[str, Any], name: str) -> frozenset[str]:
+    value = claims.get(name, [])
+    if isinstance(value, str):
+        return frozenset(part for part in value.split() if part)
+    if isinstance(value, list):
+        return frozenset(str(part) for part in value)
+    return frozenset()
+
+
+def current_principal(credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme)) -> Principal:
+    if credentials is None or credentials.scheme.lower() != "bearer":
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Bearer token is required")
+
+    claims = decode_token(credentials.credentials)
+    subject = str(claims.get("sub") or "")
+    if not subject:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token subject is required")
+
+    roles = claim_set(claims, "roles")
+    realm_access = claims.get("realm_access")
+    if isinstance(realm_access, dict):
+        roles = roles | claim_set(realm_access, "roles")
+
+    return Principal(
+        subject=subject,
+        issuer=str(claims.get("iss")),
+        audience=os.getenv("GOVERNANCE_JWT_AUDIENCE", ""),
+        roles=roles,
+        scopes=claim_set(claims, "scope") | claim_set(claims, "scp"),
+    )
+
+
+def require_permission(
+    allowed_roles: set[str],
+    allowed_scopes: set[str],
+) -> Callable[[Principal], Principal]:
+    def dependency(principal: Principal = Depends(current_principal)) -> Principal:
+        if principal.roles & allowed_roles or principal.scopes & allowed_scopes:
+            return principal
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient governance permission")
+
+    return dependency
+
+
+require_read = require_permission(
+    {"governance_admin", "governance_reader", "governance_auditor"},
+    {"governance:read"},
+)
+require_package_write = require_permission(
+    {"governance_admin", "package_writer"},
+    {"packages:write"},
+)
+require_evidence_write = require_permission(
+    {"governance_admin", "evidence_writer"},
+    {"evidence:write"},
+)
 
 
 app = FastAPI(
@@ -81,11 +181,20 @@ class EvidenceCreate(BaseModel):
     generated_by: str = Field(min_length=1, max_length=256)
 
 
-def conn():
+def conn(role: str | None = None, principal: Principal | None = None):
     DATABASE_URL = database_url()
     if not DATABASE_URL:
         raise HTTPException(status_code=500, detail="DATABASE_URL/BDAI_DATABASE_URL is not configured")
-    return psycopg.connect(DATABASE_URL, connect_timeout=5)
+    connection = psycopg.connect(DATABASE_URL, connect_timeout=5)
+    if role or principal:
+        with connection.cursor() as cur:
+            if role:
+                cur.execute(f"SET ROLE {role}")
+            if principal:
+                cur.execute("SELECT set_config('app.actor', %s, false)", (principal.subject,))
+                cur.execute("SELECT set_config('app.roles', %s, false)", (",".join(sorted(principal.roles)),))
+                cur.execute("SELECT set_config('app.scopes', %s, false)", (",".join(sorted(principal.scopes)),))
+    return connection
 
 
 @app.get("/health")
@@ -103,8 +212,8 @@ def ready() -> dict[str, str]:
 
 
 @app.get("/images/{image_id}/deployable")
-def image_deployable(image_id: UUID) -> dict[str, Any]:
-    with conn() as c:
+def image_deployable(image_id: UUID, principal: Principal = Depends(require_read)) -> dict[str, Any]:
+    with conn(role="bdai_readonly", principal=principal) as c:
         with c.cursor() as cur:
             cur.execute("SELECT container_governance.is_image_deployable(%s)", (str(image_id),))
             result = cur.fetchone()
@@ -112,8 +221,8 @@ def image_deployable(image_id: UUID) -> dict[str, Any]:
 
 
 @app.get("/images/{image_id}/release-certified")
-def image_release_certified(image_id: UUID) -> dict[str, Any]:
-    with conn() as c:
+def image_release_certified(image_id: UUID, principal: Principal = Depends(require_read)) -> dict[str, Any]:
+    with conn(role="bdai_readonly", principal=principal) as c:
         with c.cursor() as cur:
             cur.execute("SELECT container_governance.is_release_certified(%s)", (str(image_id),))
             result = cur.fetchone()
@@ -121,8 +230,8 @@ def image_release_certified(image_id: UUID) -> dict[str, Any]:
 
 
 @app.get("/lineage/container/{image_id}")
-def container_lineage(image_id: UUID) -> dict[str, Any]:
-    with conn() as c:
+def container_lineage(image_id: UUID, principal: Principal = Depends(require_read)) -> dict[str, Any]:
+    with conn(role="bdai_readonly", principal=principal) as c:
         with c.cursor(row_factory=dict_row) as cur:
             cur.execute(
                 """
@@ -136,9 +245,12 @@ def container_lineage(image_id: UUID) -> dict[str, Any]:
     return {"image_id": str(image_id), "lineage": rows}
 
 
-@app.post("/packages", dependencies=[Depends(require_write_api_key)])
-def create_package(payload: PackageCreate) -> dict[str, Any]:
-    with conn() as c:
+@app.post("/packages")
+def create_package(
+    payload: PackageCreate,
+    principal: Principal = Depends(require_package_write),
+) -> dict[str, Any]:
+    with conn(role="bdai_app_runtime", principal=principal) as c:
         with c.cursor(row_factory=dict_row) as cur:
             cur.execute(
                 """
@@ -175,9 +287,12 @@ def create_package(payload: PackageCreate) -> dict[str, Any]:
     return {"package_id": str(row["package_id"])}
 
 
-@app.post("/evidence", dependencies=[Depends(require_write_api_key)])
-def register_evidence(payload: EvidenceCreate) -> dict[str, Any]:
-    with conn() as c:
+@app.post("/evidence")
+def register_evidence(
+    payload: EvidenceCreate,
+    principal: Principal = Depends(require_evidence_write),
+) -> dict[str, Any]:
+    with conn(role="bdai_app_runtime", principal=principal) as c:
         with c.cursor(row_factory=dict_row) as cur:
             cur.execute(
                 """

@@ -86,13 +86,20 @@ tracked warning classes and triage rule are documented in
 
 ## Governance API Security
 
-Readiness endpoints are unauthenticated. Mutating endpoints require an
-`X-Governance-API-Key` header whose value is listed in the comma-separated
-`GOVERNANCE_API_KEYS` environment variable. If no write keys are configured,
-mutating endpoints fail closed with HTTP 503.
+Health and readiness endpoints are unauthenticated. Data and mutating endpoints
+require a bearer JWT. The API validates issuer, audience, signature, expiration,
+subject, and per-action roles/scopes.
 
-The Docker Compose stack configures a local-only development key:
-`bdai_dev_governance_key`.
+Production should configure `GOVERNANCE_OIDC_JWKS_URI`. The Docker Compose
+stack uses `GOVERNANCE_JWT_HS256_SECRET` only for local development and tests.
+
+Required permissions:
+
+- Read endpoints: `governance_admin`, `governance_reader`,
+  `governance_auditor`, or `governance:read`.
+- Package writes: `governance_admin`, `package_writer`, or `packages:write`.
+- Evidence writes: `governance_admin`, `evidence_writer`, or
+  `evidence:write`.
 
 Run API security tests with:
 
@@ -101,6 +108,12 @@ cd .\governance_migration_bundle\apps\governance-api
 python -m pip install -r requirements-dev.txt
 python -m pytest tests
 ```
+
+Operational hardening docs:
+
+- `../docs/THREAT_MODEL.md`
+- `../docs/MIGRATION_ROLLBACK_POLICY.md`
+- `../docs/FLYWAY_WARNING_REGISTRY.md`
 
 ## Regression Validation
 

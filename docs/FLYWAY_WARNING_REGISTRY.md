@@ -29,5 +29,5 @@ Any new warning outside this registry should be treated as a review item before
 promotion. The full validation command remains:
 
 ```powershell
-.\tools\validate_governance_migration_bundle.ps1
+.\tools\validate_governance_with_warning_registry.ps1
 ```

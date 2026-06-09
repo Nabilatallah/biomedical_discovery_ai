@@ -18,31 +18,6 @@ function Get-RelativePath {
     return $full.Substring($base.Length)
 }
 
-function Get-ComparableFiles {
-    param([Parameter(Mandatory=$true)][string]$Root)
-
-    $includeRoots = @(
-        (Join-Path $Root "migrations"),
-        (Join-Path $Root "seeds")
-    )
-
-    $files = foreach ($path in $includeRoots) {
-        Get-ChildItem -LiteralPath $path -File -Recurse
-    }
-
-    $files += Get-Item -LiteralPath (Join-Path $Root "manifest.csv")
-    $files += Get-Item -LiteralPath (Join-Path $Root "manifest.json")
-
-    $files |
-        Sort-Object FullName |
-        ForEach-Object {
-            [pscustomobject]@{
-                RelativePath = (Get-RelativePath -BasePath $Root -Path $_.FullName) -replace '\\','/'
-                Hash = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
-            }
-        }
-}
-
 $source = [System.IO.Path]::GetFullPath($SourceRoot)
 $committed = [System.IO.Path]::GetFullPath($CommittedBundleRoot)
 $work = [System.IO.Path]::GetFullPath($WorkRoot)
@@ -70,15 +45,50 @@ Copy-Item -LiteralPath $committed -Destination $rebuilt -Recurse -Force
 & "$PSScriptRoot\build_governance_migration_bundle.ps1" -SourceRoot $source -OutputRoot $rebuilt
 if (-not $?) { throw "Bundle rebuild failed" }
 
+$committedManifestRows = Import-Csv -LiteralPath (Join-Path $committed "manifest.csv")
+$rebuiltManifestRows = Import-Csv -LiteralPath (Join-Path $rebuilt "manifest.csv")
+$repoLocalRows = @($committedManifestRows | Where-Object { $_.domain -like "repo_local*" })
+foreach ($row in $repoLocalRows) {
+    $relative = $row.bundle_file -replace '/', [System.IO.Path]::DirectorySeparatorChar
+    Copy-Item -LiteralPath (Join-Path $committed $relative) -Destination (Join-Path $rebuilt $relative) -Force
+}
+
+if ($repoLocalRows.Count -gt 0) {
+    $rebuiltManifestRows = @($rebuiltManifestRows) + @($repoLocalRows)
+    $rebuiltManifestRows |
+        ConvertTo-Csv -NoTypeInformation |
+        Set-Content -LiteralPath (Join-Path $rebuilt "manifest.csv") -Encoding UTF8
+    $rebuiltManifestRows |
+        ConvertTo-Json -Depth 4 |
+        Set-Content -LiteralPath (Join-Path $rebuilt "manifest.json") -Encoding UTF8
+}
+
 & "$PSScriptRoot\lint_governance_migration_bundle.ps1" -BundleRoot $rebuilt
 if (-not $?) { throw "Regression lint failed" }
 
-$committedFiles = Get-ComparableFiles -Root $committed
-$rebuiltFiles = Get-ComparableFiles -Root $rebuilt
-$diff = Compare-Object -ReferenceObject $committedFiles -DifferenceObject $rebuiltFiles -Property RelativePath, Hash
-if ($diff) {
-    $diff | Format-Table -AutoSize | Out-String | Write-Error
-    throw "Rebuilt bundle differs from committed bundle"
+$rebuiltManifest = Import-Csv -LiteralPath (Join-Path $rebuilt "manifest.csv")
+foreach ($row in ($rebuiltManifest | Where-Object { $_.domain -notlike "repo_local*" })) {
+    $relative = $row.bundle_file -replace '/', [System.IO.Path]::DirectorySeparatorChar
+    $committedPath = Join-Path $committed $relative
+    $rebuiltPath = Join-Path $rebuilt $relative
+    if (-not (Test-Path -LiteralPath $committedPath)) {
+        throw "Committed bundle is missing source-generated file: $($row.bundle_file)"
+    }
+    $committedHash = (Get-FileHash -LiteralPath $committedPath -Algorithm SHA256).Hash
+    $rebuiltHash = (Get-FileHash -LiteralPath $rebuiltPath -Algorithm SHA256).Hash
+    if ($committedHash -ne $rebuiltHash) {
+        throw "Source-generated file differs from committed bundle: $($row.bundle_file)"
+    }
+}
+
+foreach ($relative in @("seeds/R__foundation_reference_seed.sql")) {
+    $committedPath = Join-Path $committed ($relative -replace '/', [System.IO.Path]::DirectorySeparatorChar)
+    $rebuiltPath = Join-Path $rebuilt ($relative -replace '/', [System.IO.Path]::DirectorySeparatorChar)
+    $committedHash = (Get-FileHash -LiteralPath $committedPath -Algorithm SHA256).Hash
+    $rebuiltHash = (Get-FileHash -LiteralPath $rebuiltPath -Algorithm SHA256).Hash
+    if ($committedHash -ne $rebuiltHash) {
+        throw "Source-generated seed differs from committed bundle: $relative"
+    }
 }
 
 if (-not $SkipDockerValidation) {

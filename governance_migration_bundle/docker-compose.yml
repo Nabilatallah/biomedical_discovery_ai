@@ -30,7 +30,9 @@ services:
       context: ./apps/governance-api
     environment:
       DATABASE_URL: postgresql://bdai:bdai_dev_password@postgres:5432/biodiscoveryai
-      GOVERNANCE_API_KEYS: bdai_dev_governance_key
+      GOVERNANCE_JWT_ISSUER: https://auth.local/bdai
+      GOVERNANCE_JWT_AUDIENCE: biodiscoveryai-governance
+      GOVERNANCE_JWT_HS256_SECRET: bdai_dev_jwt_secret_not_for_production
     ports:
       - "8008:8000"
     depends_on:

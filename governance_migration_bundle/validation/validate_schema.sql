@@ -97,3 +97,22 @@ SELECT
 FROM flyway_schema_history
 WHERE success = true
   AND type <> 'SCHEMA';
+
+DO $$
+BEGIN
+    IF NOT has_table_privilege('bdai_app_runtime', 'container_governance.approved_packages', 'INSERT') THEN
+        RAISE EXCEPTION 'Authorization validation failed: bdai_app_runtime cannot insert approved packages';
+    END IF;
+
+    IF NOT has_table_privilege('bdai_app_runtime', 'container_governance.container_evidence', 'INSERT') THEN
+        RAISE EXCEPTION 'Authorization validation failed: bdai_app_runtime cannot insert container evidence';
+    END IF;
+
+    IF has_table_privilege('bdai_app_runtime', 'governance_admin.schema_migrations', 'INSERT') THEN
+        RAISE EXCEPTION 'Authorization validation failed: bdai_app_runtime can insert governance_admin.schema_migrations';
+    END IF;
+
+    IF has_table_privilege('bdai_readonly', 'container_governance.approved_packages', 'INSERT') THEN
+        RAISE EXCEPTION 'Authorization validation failed: bdai_readonly can insert approved packages';
+    END IF;
+END $$;

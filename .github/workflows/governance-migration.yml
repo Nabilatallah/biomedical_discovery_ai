@@ -25,10 +25,26 @@ jobs:
         working-directory: governance_migration_bundle/apps/governance-api
         run: python -m pytest tests
 
+      - name: Scan for committed secrets
+        shell: pwsh
+        run: ./tools/scan_secrets.ps1
+
       - name: Lint governance migration bundle
         shell: pwsh
         run: ./tools/lint_governance_migration_bundle.ps1
 
-      - name: Run Docker/Flyway/Postgres validation
+      - name: Run Docker/Flyway/Postgres validation with warning enforcement
         shell: pwsh
-        run: ./tools/validate_governance_migration_bundle.ps1
+        run: ./tools/validate_governance_with_warning_registry.ps1
+
+      - name: Run backup/restore drill
+        shell: pwsh
+        run: ./tools/test_backup_restore_drill.ps1
+
+      - name: Run performance baseline
+        shell: pwsh
+        run: ./tools/run_performance_baseline.ps1 -EventCount 1000
+
+      - name: Generate release evidence packet
+        shell: pwsh
+        run: ./tools/generate_release_evidence_packet.ps1

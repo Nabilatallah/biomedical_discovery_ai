@@ -101,3 +101,4 @@
 "100","migrations/V100__regulated_compliance_health_views.sql","106","hardening","v091_v108_hardening_migrations/V106__regulated_compliance_health_views.sql","3735"
 "101","migrations/V101__backup_restore_and_disaster_recovery_evidence.sql","107","hardening","v091_v108_hardening_migrations/V107__backup_restore_and_disaster_recovery_evidence.sql","5023"
 "102","migrations/V102__schema_architecture_map_and_reference_rules.sql","108","hardening","v091_v108_hardening_migrations/V108__schema_architecture_map_and_reference_rules.sql","17264"
+"103","migrations/V103__least_privilege_runtime_roles.sql","103","repo_local_hardening","governance_migration_bundle/migrations/V103__least_privilege_runtime_roles.sql","3046"

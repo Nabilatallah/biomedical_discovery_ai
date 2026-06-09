@@ -54,3 +54,7 @@ for the hardening layer and is not a second deployment target.
 4. CI validation: `.github/workflows/governance-migration.yml` runs API
    security tests, static bundle lint, and Docker/Flyway/Postgres validation on
    pushes and pull requests.
+5. Operational proof scripts cover warning-registry enforcement,
+   backup/restore validation, performance baseline, release evidence packet
+   generation, secret scanning, OpenAPI contract snapshots, and least-privilege
+   database role checks.

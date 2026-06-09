@@ -814,5 +814,13 @@
         "domain":  "hardening",
         "source_file":  "v091_v108_hardening_migrations/V108__schema_architecture_map_and_reference_rules.sql",
         "bytes":  17264
+    },
+    {
+        "bundle_version":  "103",
+        "bundle_file":  "migrations/V103__least_privilege_runtime_roles.sql",
+        "source_version":  "103",
+        "domain":  "repo_local_hardening",
+        "source_file":  "governance_migration_bundle/migrations/V103__least_privilege_runtime_roles.sql",
+        "bytes":  3046
     }
 ]

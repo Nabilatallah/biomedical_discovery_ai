@@ -3,3 +3,6 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+governance_migration_bundle/validation/*.log
+governance_migration_bundle/validation/*.log.*
+governance_migration_bundle/validation/release_evidence_packet.json
