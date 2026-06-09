@@ -1,0 +1,818 @@
+﻿[
+    {
+        "bundle_version":  "001",
+        "bundle_file":  "migrations/V001__foundation_schemas.sql",
+        "source_version":  "001",
+        "domain":  "foundation_environment_lineage",
+        "source_file":  "v001_v010_environment_lineage/postgres/migrations/001_foundation_schemas.sql",
+        "bytes":  347
+    },
+    {
+        "bundle_version":  "002",
+        "bundle_file":  "migrations/V002__registry_tables.sql",
+        "source_version":  "002",
+        "domain":  "foundation_environment_lineage",
+        "source_file":  "v001_v010_environment_lineage/postgres/migrations/002_registry_tables.sql",
+        "bytes":  2680
+    },
+    {
+        "bundle_version":  "003",
+        "bundle_file":  "migrations/V003__partition_ready_evidence_tables.sql",
+        "source_version":  "003",
+        "domain":  "foundation_environment_lineage",
+        "source_file":  "v001_v010_environment_lineage/postgres/migrations/003_partition_ready_evidence_tables.sql",
+        "bytes":  5207
+    },
+    {
+        "bundle_version":  "004",
+        "bundle_file":  "migrations/V004__artifact_report_snapshot_tables.sql",
+        "source_version":  "004",
+        "domain":  "foundation_environment_lineage",
+        "source_file":  "v001_v010_environment_lineage/postgres/migrations/004_artifact_report_snapshot_tables.sql",
+        "bytes":  1992
+    },
+    {
+        "bundle_version":  "005",
+        "bundle_file":  "migrations/V005__hash_chain_triggers.sql",
+        "source_version":  "005",
+        "domain":  "foundation_environment_lineage",
+        "source_file":  "v001_v010_environment_lineage/postgres/migrations/005_hash_chain_triggers.sql",
+        "bytes":  1048
+    },
+    {
+        "bundle_version":  "006",
+        "bundle_file":  "migrations/V006__indexes.sql",
+        "source_version":  "006",
+        "domain":  "foundation_environment_lineage",
+        "source_file":  "v001_v010_environment_lineage/postgres/migrations/006_indexes.sql",
+        "bytes":  1302
+    },
+    {
+        "bundle_version":  "007",
+        "bundle_file":  "migrations/V007__script_contract_tables.sql",
+        "source_version":  "007",
+        "domain":  "foundation_environment_lineage",
+        "source_file":  "v001_v010_environment_lineage/postgres/migrations/007_script_contract_tables.sql",
+        "bytes":  3717
+    },
+    {
+        "bundle_version":  "008",
+        "bundle_file":  "migrations/V008__script_contract_indexes.sql",
+        "source_version":  "008",
+        "domain":  "foundation_environment_lineage",
+        "source_file":  "v001_v010_environment_lineage/postgres/migrations/008_script_contract_indexes.sql",
+        "bytes":  1279
+    },
+    {
+        "bundle_version":  "009",
+        "bundle_file":  "migrations/V009__execution_environments.sql",
+        "source_version":  "009",
+        "domain":  "foundation_environment_lineage",
+        "source_file":  "v001_v010_environment_lineage/postgres/migrations/009_execution_environments.sql",
+        "bytes":  2214
+    },
+    {
+        "bundle_version":  "010",
+        "bundle_file":  "migrations/V010__enable_monthly_partitions.sql",
+        "source_version":  "010",
+        "domain":  "foundation_environment_lineage",
+        "source_file":  "v001_v010_environment_lineage/postgres/migrations/010_enable_monthly_partitions.sql",
+        "bytes":  933
+    },
+    {
+        "bundle_version":  "011",
+        "bundle_file":  "migrations/V011__execution_environment_indexes.sql",
+        "source_version":  "011",
+        "domain":  "foundation_environment_lineage",
+        "source_file":  "v001_v010_environment_lineage/postgres/migrations/011_execution_environment_indexes.sql",
+        "bytes":  1100
+    },
+    {
+        "bundle_version":  "012",
+        "bundle_file":  "migrations/V012__container_governance_registry.sql",
+        "source_version":  "011",
+        "domain":  "container_governance",
+        "source_file":  "v011_v025_container_governance/postgres/migrations/V011__container_governance_registry.sql",
+        "bytes":  18159
+    },
+    {
+        "bundle_version":  "013",
+        "bundle_file":  "migrations/V013__container_governance_final_enterprise_standard.sql",
+        "source_version":  "015",
+        "domain":  "container_governance",
+        "source_file":  "v011_v025_container_governance/postgres/migrations/V015__container_governance_final_enterprise_standard.sql",
+        "bytes":  53249
+    },
+    {
+        "bundle_version":  "014",
+        "bundle_file":  "migrations/V014__container_governance_automation.sql",
+        "source_version":  "016",
+        "domain":  "container_governance",
+        "source_file":  "v011_v025_container_governance/postgres/migrations/V016__container_governance_automation.sql",
+        "bytes":  19080
+    },
+    {
+        "bundle_version":  "015",
+        "bundle_file":  "migrations/V015__container_governance_ai_governance.sql",
+        "source_version":  "017",
+        "domain":  "container_governance",
+        "source_file":  "v011_v025_container_governance/postgres/migrations/V017__container_governance_ai_governance.sql",
+        "bytes":  17039
+    },
+    {
+        "bundle_version":  "016",
+        "bundle_file":  "migrations/V016__container_governance_federation.sql",
+        "source_version":  "018",
+        "domain":  "container_governance",
+        "source_file":  "v011_v025_container_governance/postgres/migrations/V018__container_governance_federation.sql",
+        "bytes":  12583
+    },
+    {
+        "bundle_version":  "017",
+        "bundle_file":  "migrations/V017__container_governance_archive_partitioning.sql",
+        "source_version":  "019",
+        "domain":  "container_governance",
+        "source_file":  "v011_v025_container_governance/postgres/migrations/V019__container_governance_archive_partitioning.sql",
+        "bytes":  13052
+    },
+    {
+        "bundle_version":  "018",
+        "bundle_file":  "migrations/V018__container_governance_regulated_operations.sql",
+        "source_version":  "020",
+        "domain":  "container_governance",
+        "source_file":  "v011_v025_container_governance/postgres/migrations/V020__container_governance_regulated_operations.sql",
+        "bytes":  19435
+    },
+    {
+        "bundle_version":  "019",
+        "bundle_file":  "migrations/V019__container_governance_policy_as_code.sql",
+        "source_version":  "021",
+        "domain":  "container_governance",
+        "source_file":  "v011_v025_container_governance/postgres/migrations/V021__container_governance_policy_as_code.sql",
+        "bytes":  11945
+    },
+    {
+        "bundle_version":  "020",
+        "bundle_file":  "migrations/V020__container_governance_release_evidence_packets.sql",
+        "source_version":  "022",
+        "domain":  "container_governance",
+        "source_file":  "v011_v025_container_governance/postgres/migrations/V022__container_governance_release_evidence_packets.sql",
+        "bytes":  11427
+    },
+    {
+        "bundle_version":  "021",
+        "bundle_file":  "migrations/V021__container_governance_revalidation_scheduler.sql",
+        "source_version":  "023",
+        "domain":  "container_governance",
+        "source_file":  "v011_v025_container_governance/postgres/migrations/V023__container_governance_revalidation_scheduler.sql",
+        "bytes":  9566
+    },
+    {
+        "bundle_version":  "022",
+        "bundle_file":  "migrations/V022__container_governance_incident_response.sql",
+        "source_version":  "024",
+        "domain":  "container_governance",
+        "source_file":  "v011_v025_container_governance/postgres/migrations/V024__container_governance_incident_response.sql",
+        "bytes":  9991
+    },
+    {
+        "bundle_version":  "023",
+        "bundle_file":  "migrations/V023__container_governance_control_matrix.sql",
+        "source_version":  "025",
+        "domain":  "container_governance",
+        "source_file":  "v011_v025_container_governance/postgres/migrations/V025__container_governance_control_matrix.sql",
+        "bytes":  14169
+    },
+    {
+        "bundle_version":  "024",
+        "bundle_file":  "migrations/V024__architecture_governance.sql",
+        "source_version":  "026",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V026__architecture_governance.sql",
+        "bytes":  399
+    },
+    {
+        "bundle_version":  "025",
+        "bundle_file":  "migrations/V025__supply_chain_trust.sql",
+        "source_version":  "027",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V027__supply_chain_trust.sql",
+        "bytes":  386
+    },
+    {
+        "bundle_version":  "026",
+        "bundle_file":  "migrations/V026__cryptographic_trust.sql",
+        "source_version":  "028",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V028__cryptographic_trust.sql",
+        "bytes":  366
+    },
+    {
+        "bundle_version":  "027",
+        "bundle_file":  "migrations/V027__data_governance.sql",
+        "source_version":  "029",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V029__data_governance.sql",
+        "bytes":  377
+    },
+    {
+        "bundle_version":  "028",
+        "bundle_file":  "migrations/V028__business_continuity.sql",
+        "source_version":  "030",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V030__business_continuity.sql",
+        "bytes":  374
+    },
+    {
+        "bundle_version":  "029",
+        "bundle_file":  "migrations/V029__human_governance.sql",
+        "source_version":  "031",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V031__human_governance.sql",
+        "bytes":  379
+    },
+    {
+        "bundle_version":  "030",
+        "bundle_file":  "migrations/V030__digital_trust_ledger.sql",
+        "source_version":  "032",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V032__digital_trust_ledger.sql",
+        "bytes":  375
+    },
+    {
+        "bundle_version":  "031",
+        "bundle_file":  "migrations/V031__enterprise_risk_management.sql",
+        "source_version":  "033",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V033__enterprise_risk_management.sql",
+        "bytes":  6213
+    },
+    {
+        "bundle_version":  "032",
+        "bundle_file":  "migrations/V032__vendor_risk_management.sql",
+        "source_version":  "034",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V034__vendor_risk_management.sql",
+        "bytes":  6690
+    },
+    {
+        "bundle_version":  "033",
+        "bundle_file":  "migrations/V033__scientific_governance.sql",
+        "source_version":  "035",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V035__scientific_governance.sql",
+        "bytes":  6880
+    },
+    {
+        "bundle_version":  "034",
+        "bundle_file":  "migrations/V034__knowledge_graph_governance.sql",
+        "source_version":  "036",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V036__knowledge_graph_governance.sql",
+        "bytes":  5301
+    },
+    {
+        "bundle_version":  "035",
+        "bundle_file":  "migrations/V035__financial_governance.sql",
+        "source_version":  "037",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V037__financial_governance.sql",
+        "bytes":  5050
+    },
+    {
+        "bundle_version":  "036",
+        "bundle_file":  "migrations/V036__digital_twin_governance.sql",
+        "source_version":  "038",
+        "domain":  "ai_governance",
+        "source_file":  "v026_v038_ai_governance/postgres/migrations/V038__digital_twin_governance.sql",
+        "bytes":  6243
+    },
+    {
+        "bundle_version":  "037",
+        "bundle_file":  "migrations/V037__enterprise_architecture_repository.sql",
+        "source_version":  "039",
+        "domain":  "ai_governance_expansion",
+        "source_file":  "v039_v048_ai_governance/postgres/migrations/V039__enterprise_architecture_repository.sql",
+        "bytes":  858
+    },
+    {
+        "bundle_version":  "038",
+        "bundle_file":  "migrations/V038__master_data_governance.sql",
+        "source_version":  "040",
+        "domain":  "ai_governance_expansion",
+        "source_file":  "v039_v048_ai_governance/postgres/migrations/V040__master_data_governance.sql",
+        "bytes":  804
+    },
+    {
+        "bundle_version":  "039",
+        "bundle_file":  "migrations/V039__portfolio_management.sql",
+        "source_version":  "041",
+        "domain":  "ai_governance_expansion",
+        "source_file":  "v039_v048_ai_governance/postgres/migrations/V041__portfolio_management.sql",
+        "bytes":  764
+    },
+    {
+        "bundle_version":  "040",
+        "bundle_file":  "migrations/V040__regulatory_submission_governance.sql",
+        "source_version":  "042",
+        "domain":  "ai_governance_expansion",
+        "source_file":  "v039_v048_ai_governance/postgres/migrations/V042__regulatory_submission_governance.sql",
+        "bytes":  786
+    },
+    {
+        "bundle_version":  "041",
+        "bundle_file":  "migrations/V041__model_risk_management.sql",
+        "source_version":  "043",
+        "domain":  "ai_governance_expansion",
+        "source_file":  "v039_v048_ai_governance/postgres/migrations/V043__model_risk_management.sql",
+        "bytes":  785
+    },
+    {
+        "bundle_version":  "042",
+        "bundle_file":  "migrations/V042__enterprise_knowledge_graph.sql",
+        "source_version":  "044",
+        "domain":  "ai_governance_expansion",
+        "source_file":  "v039_v048_ai_governance/postgres/migrations/V044__enterprise_knowledge_graph.sql",
+        "bytes":  826
+    },
+    {
+        "bundle_version":  "043",
+        "bundle_file":  "migrations/V043__autonomous_agent_governance.sql",
+        "source_version":  "045",
+        "domain":  "ai_governance_expansion",
+        "source_file":  "v039_v048_ai_governance/postgres/migrations/V045__autonomous_agent_governance.sql",
+        "bytes":  775
+    },
+    {
+        "bundle_version":  "044",
+        "bundle_file":  "migrations/V044__crypto_agility_and_pqc.sql",
+        "source_version":  "046",
+        "domain":  "ai_governance_expansion",
+        "source_file":  "v039_v048_ai_governance/postgres/migrations/V046__crypto_agility_and_pqc.sql",
+        "bytes":  790
+    },
+    {
+        "bundle_version":  "045",
+        "bundle_file":  "migrations/V045__human_capital_governance.sql",
+        "source_version":  "047",
+        "domain":  "ai_governance_expansion",
+        "source_file":  "v039_v048_ai_governance/postgres/migrations/V047__human_capital_governance.sql",
+        "bytes":  768
+    },
+    {
+        "bundle_version":  "046",
+        "bundle_file":  "migrations/V046__executive_governance.sql",
+        "source_version":  "048",
+        "domain":  "ai_governance_expansion",
+        "source_file":  "v039_v048_ai_governance/postgres/migrations/V048__executive_governance.sql",
+        "bytes":  752
+    },
+    {
+        "bundle_version":  "047",
+        "bundle_file":  "migrations/V047__enterprise_process_governance.sql",
+        "source_version":  "049",
+        "domain":  "governance_domains",
+        "source_file":  "v049_v057_ai_governance/postgres/migrations/V049__enterprise_process_governance.sql",
+        "bytes":  393
+    },
+    {
+        "bundle_version":  "048",
+        "bundle_file":  "migrations/V048__decision_governance.sql",
+        "source_version":  "050",
+        "domain":  "governance_domains",
+        "source_file":  "v049_v057_ai_governance/postgres/migrations/V050__decision_governance.sql",
+        "bytes":  381
+    },
+    {
+        "bundle_version":  "049",
+        "bundle_file":  "migrations/V049__ai_assurance.sql",
+        "source_version":  "051",
+        "domain":  "governance_domains",
+        "source_file":  "v049_v057_ai_governance/postgres/migrations/V051__ai_assurance.sql",
+        "bytes":  397
+    },
+    {
+        "bundle_version":  "050",
+        "bundle_file":  "migrations/V050__data_mesh_governance.sql",
+        "source_version":  "052",
+        "domain":  "governance_domains",
+        "source_file":  "v049_v057_ai_governance/postgres/migrations/V052__data_mesh_governance.sql",
+        "bytes":  384
+    },
+    {
+        "bundle_version":  "051",
+        "bundle_file":  "migrations/V051__research_knowledge_management.sql",
+        "source_version":  "053",
+        "domain":  "governance_domains",
+        "source_file":  "v049_v057_ai_governance/postgres/migrations/V053__research_knowledge_management.sql",
+        "bytes":  394
+    },
+    {
+        "bundle_version":  "052",
+        "bundle_file":  "migrations/V052__observability_governance.sql",
+        "source_version":  "054",
+        "domain":  "governance_domains",
+        "source_file":  "v049_v057_ai_governance/postgres/migrations/V054__observability_governance.sql",
+        "bytes":  387
+    },
+    {
+        "bundle_version":  "053",
+        "bundle_file":  "migrations/V053__sustainability_governance.sql",
+        "source_version":  "055",
+        "domain":  "governance_domains",
+        "source_file":  "v049_v057_ai_governance/postgres/migrations/V055__sustainability_governance.sql",
+        "bytes":  381
+    },
+    {
+        "bundle_version":  "054",
+        "bundle_file":  "migrations/V054__legal_governance.sql",
+        "source_version":  "056",
+        "domain":  "governance_domains",
+        "source_file":  "v049_v057_ai_governance/postgres/migrations/V056__legal_governance.sql",
+        "bytes":  378
+    },
+    {
+        "bundle_version":  "055",
+        "bundle_file":  "migrations/V055__enterprise_digital_thread.sql",
+        "source_version":  "057",
+        "domain":  "governance_domains",
+        "source_file":  "v049_v057_ai_governance/postgres/migrations/V057__enterprise_digital_thread.sql",
+        "bytes":  432
+    },
+    {
+        "bundle_version":  "056",
+        "bundle_file":  "migrations/V056__universal_entity_model.sql",
+        "source_version":  "058",
+        "domain":  "foundation_kernel",
+        "source_file":  "v058_v063_foundation_kernel/postgres/migrations/V058__universal_entity_model.sql",
+        "bytes":  5957
+    },
+    {
+        "bundle_version":  "057",
+        "bundle_file":  "migrations/V057__global_identity_framework.sql",
+        "source_version":  "059",
+        "domain":  "foundation_kernel",
+        "source_file":  "v058_v063_foundation_kernel/postgres/migrations/V059__global_identity_framework.sql",
+        "bytes":  4925
+    },
+    {
+        "bundle_version":  "058",
+        "bundle_file":  "migrations/V058__enterprise_event_framework.sql",
+        "source_version":  "060",
+        "domain":  "foundation_kernel",
+        "source_file":  "v058_v063_foundation_kernel/postgres/migrations/V060__enterprise_event_framework.sql",
+        "bytes":  5600
+    },
+    {
+        "bundle_version":  "059",
+        "bundle_file":  "migrations/V059__metadata_registry.sql",
+        "source_version":  "061",
+        "domain":  "foundation_kernel",
+        "source_file":  "v058_v063_foundation_kernel/postgres/migrations/V061__metadata_registry.sql",
+        "bytes":  5014
+    },
+    {
+        "bundle_version":  "060",
+        "bundle_file":  "migrations/V060__relationship_engine.sql",
+        "source_version":  "062",
+        "domain":  "foundation_kernel",
+        "source_file":  "v058_v063_foundation_kernel/postgres/migrations/V062__relationship_engine.sql",
+        "bytes":  4843
+    },
+    {
+        "bundle_version":  "061",
+        "bundle_file":  "migrations/V061__temporal_governance.sql",
+        "source_version":  "063",
+        "domain":  "foundation_kernel",
+        "source_file":  "v058_v063_foundation_kernel/postgres/migrations/V063__temporal_governance.sql",
+        "bytes":  4323
+    },
+    {
+        "bundle_version":  "062",
+        "bundle_file":  "migrations/V062__governance_rules_engine.sql",
+        "source_version":  "068",
+        "domain":  "platform_services",
+        "source_file":  "v068_v074_platform_services/postgres/migrations/V068__governance_rules_engine.sql",
+        "bytes":  841
+    },
+    {
+        "bundle_version":  "063",
+        "bundle_file":  "migrations/V063__workflow_orchestration.sql",
+        "source_version":  "069",
+        "domain":  "platform_services",
+        "source_file":  "v068_v074_platform_services/postgres/migrations/V069__workflow_orchestration.sql",
+        "bytes":  822
+    },
+    {
+        "bundle_version":  "064",
+        "bundle_file":  "migrations/V064__governance_analytics.sql",
+        "source_version":  "070",
+        "domain":  "platform_services",
+        "source_file":  "v068_v074_platform_services/postgres/migrations/V070__governance_analytics.sql",
+        "bytes":  804
+    },
+    {
+        "bundle_version":  "065",
+        "bundle_file":  "migrations/V065__governance_recommendation_engine.sql",
+        "source_version":  "071",
+        "domain":  "platform_services",
+        "source_file":  "v068_v074_platform_services/postgres/migrations/V071__governance_recommendation_engine.sql",
+        "bytes":  814
+    },
+    {
+        "bundle_version":  "066",
+        "bundle_file":  "migrations/V066__governance_simulation_engine.sql",
+        "source_version":  "072",
+        "domain":  "platform_services",
+        "source_file":  "v068_v074_platform_services/postgres/migrations/V072__governance_simulation_engine.sql",
+        "bytes":  822
+    },
+    {
+        "bundle_version":  "067",
+        "bundle_file":  "migrations/V067__semantic_reasoning.sql",
+        "source_version":  "073",
+        "domain":  "platform_services",
+        "source_file":  "v068_v074_platform_services/postgres/migrations/V073__semantic_reasoning.sql",
+        "bytes":  786
+    },
+    {
+        "bundle_version":  "068",
+        "bundle_file":  "migrations/V068__governance_assistant.sql",
+        "source_version":  "074",
+        "domain":  "platform_services",
+        "source_file":  "v068_v074_platform_services/postgres/migrations/V074__governance_assistant.sql",
+        "bytes":  814
+    },
+    {
+        "bundle_version":  "069",
+        "bundle_file":  "migrations/V069__enterprise_governance_os.sql",
+        "source_version":  "075",
+        "domain":  "platform_expansion",
+        "source_file":  "v075_v084_platform_expansion/postgres/migrations/V075__enterprise_governance_os.sql",
+        "bytes":  6741
+    },
+    {
+        "bundle_version":  "070",
+        "bundle_file":  "migrations/V070__autonomous_governance.sql",
+        "source_version":  "076",
+        "domain":  "platform_expansion",
+        "source_file":  "v075_v084_platform_expansion/postgres/migrations/V076__autonomous_governance.sql",
+        "bytes":  5132
+    },
+    {
+        "bundle_version":  "071",
+        "bundle_file":  "migrations/V071__governance_marketplace.sql",
+        "source_version":  "077",
+        "domain":  "platform_expansion",
+        "source_file":  "v075_v084_platform_expansion/postgres/migrations/V077__governance_marketplace.sql",
+        "bytes":  3800
+    },
+    {
+        "bundle_version":  "072",
+        "bundle_file":  "migrations/V072__multi_enterprise_federation.sql",
+        "source_version":  "078",
+        "domain":  "platform_expansion",
+        "source_file":  "v075_v084_platform_expansion/postgres/migrations/V078__multi_enterprise_federation.sql",
+        "bytes":  4268
+    },
+    {
+        "bundle_version":  "073",
+        "bundle_file":  "migrations/V073__governance_lakehouse.sql",
+        "source_version":  "079",
+        "domain":  "platform_expansion",
+        "source_file":  "v075_v084_platform_expansion/postgres/migrations/V079__governance_lakehouse.sql",
+        "bytes":  3878
+    },
+    {
+        "bundle_version":  "074",
+        "bundle_file":  "migrations/V074__governance_event_streaming.sql",
+        "source_version":  "080",
+        "domain":  "platform_expansion",
+        "source_file":  "v075_v084_platform_expansion/postgres/migrations/V080__governance_event_streaming.sql",
+        "bytes":  3700
+    },
+    {
+        "bundle_version":  "075",
+        "bundle_file":  "migrations/V075__regulatory_intelligence.sql",
+        "source_version":  "081",
+        "domain":  "platform_expansion",
+        "source_file":  "v075_v084_platform_expansion/postgres/migrations/V081__regulatory_intelligence.sql",
+        "bytes":  4775
+    },
+    {
+        "bundle_version":  "076",
+        "bundle_file":  "migrations/V076__governance_digital_twin.sql",
+        "source_version":  "082",
+        "domain":  "platform_expansion",
+        "source_file":  "v075_v084_platform_expansion/postgres/migrations/V082__governance_digital_twin.sql",
+        "bytes":  4320
+    },
+    {
+        "bundle_version":  "077",
+        "bundle_file":  "migrations/V077__strategic_planning.sql",
+        "source_version":  "083",
+        "domain":  "platform_expansion",
+        "source_file":  "v075_v084_platform_expansion/postgres/migrations/V083__strategic_planning.sql",
+        "bytes":  3762
+    },
+    {
+        "bundle_version":  "078",
+        "bundle_file":  "migrations/V078__enterprise_cognitive_layer.sql",
+        "source_version":  "084",
+        "domain":  "platform_expansion",
+        "source_file":  "v075_v084_platform_expansion/postgres/migrations/V084__enterprise_cognitive_layer.sql",
+        "bytes":  5752
+    },
+    {
+        "bundle_version":  "079",
+        "bundle_file":  "migrations/V079__governance_api_contracts.sql",
+        "source_version":  "085",
+        "domain":  "implementation_contracts",
+        "source_file":  "v085_v090_implementation_contracts/postgres/migrations/V085__governance_api_contracts.sql",
+        "bytes":  5399
+    },
+    {
+        "bundle_version":  "080",
+        "bundle_file":  "migrations/V080__governance_cli_contracts.sql",
+        "source_version":  "086",
+        "domain":  "implementation_contracts",
+        "source_file":  "v085_v090_implementation_contracts/postgres/migrations/V086__governance_cli_contracts.sql",
+        "bytes":  4548
+    },
+    {
+        "bundle_version":  "081",
+        "bundle_file":  "migrations/V081__governance_generator_contracts.sql",
+        "source_version":  "087",
+        "domain":  "implementation_contracts",
+        "source_file":  "v085_v090_implementation_contracts/postgres/migrations/V087__governance_generator_contracts.sql",
+        "bytes":  5267
+    },
+    {
+        "bundle_version":  "082",
+        "bundle_file":  "migrations/V082__governance_validation_test_registry.sql",
+        "source_version":  "088",
+        "domain":  "implementation_contracts",
+        "source_file":  "v085_v090_implementation_contracts/postgres/migrations/V088__governance_validation_test_registry.sql",
+        "bytes":  5007
+    },
+    {
+        "bundle_version":  "083",
+        "bundle_file":  "migrations/V083__governance_dashboard_contracts.sql",
+        "source_version":  "089",
+        "domain":  "implementation_contracts",
+        "source_file":  "v085_v090_implementation_contracts/postgres/migrations/V089__governance_dashboard_contracts.sql",
+        "bytes":  4545
+    },
+    {
+        "bundle_version":  "084",
+        "bundle_file":  "migrations/V084__governance_sop_runbook_registry.sql",
+        "source_version":  "090",
+        "domain":  "implementation_contracts",
+        "source_file":  "v085_v090_implementation_contracts/postgres/migrations/V090__governance_sop_runbook_registry.sql",
+        "bytes":  5274
+    },
+    {
+        "bundle_version":  "085",
+        "bundle_file":  "migrations/V085__evidence_schema_migration_history.sql",
+        "source_version":  "091",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V091__evidence_schema_migration_history.sql",
+        "bytes":  3338
+    },
+    {
+        "bundle_version":  "086",
+        "bundle_file":  "migrations/V086__controlled_vocabularies_constraints_and_run_lifecycle.sql",
+        "source_version":  "092",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V092__controlled_vocabularies_constraints_and_run_lifecycle.sql",
+        "bytes":  12272
+    },
+    {
+        "bundle_version":  "087",
+        "bundle_file":  "migrations/V087__append_only_evidence_and_run_immutability.sql",
+        "source_version":  "093",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V093__append_only_evidence_and_run_immutability.sql",
+        "bytes":  2772
+    },
+    {
+        "bundle_version":  "088",
+        "bundle_file":  "migrations/V088__audit_event_sequence_and_canonical_hash_chain.sql",
+        "source_version":  "094",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V094__audit_event_sequence_and_canonical_hash_chain.sql",
+        "bytes":  3994
+    },
+    {
+        "bundle_version":  "089",
+        "bundle_file":  "migrations/V089__monthly_partitioned_evidence_tables.sql",
+        "source_version":  "095",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V095__monthly_partitioned_evidence_tables.sql",
+        "bytes":  12214
+    },
+    {
+        "bundle_version":  "090",
+        "bundle_file":  "migrations/V090__identity_approvals_signatures_and_rbac.sql",
+        "source_version":  "096",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V096__identity_approvals_signatures_and_rbac.sql",
+        "bytes":  6895
+    },
+    {
+        "bundle_version":  "091",
+        "bundle_file":  "migrations/V091__retention_legal_hold_enforcement.sql",
+        "source_version":  "097",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V097__retention_legal_hold_enforcement.sql",
+        "bytes":  5250
+    },
+    {
+        "bundle_version":  "092",
+        "bundle_file":  "migrations/V092__evidence_ingestion_observability.sql",
+        "source_version":  "098",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V098__evidence_ingestion_observability.sql",
+        "bytes":  7436
+    },
+    {
+        "bundle_version":  "093",
+        "bundle_file":  "migrations/V093__partition_index_reconciliation.sql",
+        "source_version":  "099",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V099__partition_index_reconciliation.sql",
+        "bytes":  4552
+    },
+    {
+        "bundle_version":  "094",
+        "bundle_file":  "migrations/V094__constraint_validation_and_data_quality_gate.sql",
+        "source_version":  "100",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V100__constraint_validation_and_data_quality_gate.sql",
+        "bytes":  2258
+    },
+    {
+        "bundle_version":  "095",
+        "bundle_file":  "migrations/V095__row_level_security_policies.sql",
+        "source_version":  "101",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V101__row_level_security_policies.sql",
+        "bytes":  6788
+    },
+    {
+        "bundle_version":  "096",
+        "bundle_file":  "migrations/V096__audit_chain_verification_and_controlled_corrections.sql",
+        "source_version":  "102",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V102__audit_chain_verification_and_controlled_corrections.sql",
+        "bytes":  5471
+    },
+    {
+        "bundle_version":  "097",
+        "bundle_file":  "migrations/V097__ddl_audit_and_privileged_operation_logging.sql",
+        "source_version":  "103",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V103__ddl_audit_and_privileged_operation_logging.sql",
+        "bytes":  3310
+    },
+    {
+        "bundle_version":  "098",
+        "bundle_file":  "migrations/V098__partition_maintenance_and_integrity.sql",
+        "source_version":  "104",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V104__partition_maintenance_and_integrity.sql",
+        "bytes":  4297
+    },
+    {
+        "bundle_version":  "099",
+        "bundle_file":  "migrations/V099__database_data_dictionary_and_classification.sql",
+        "source_version":  "105",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V105__database_data_dictionary_and_classification.sql",
+        "bytes":  5212
+    },
+    {
+        "bundle_version":  "100",
+        "bundle_file":  "migrations/V100__regulated_compliance_health_views.sql",
+        "source_version":  "106",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V106__regulated_compliance_health_views.sql",
+        "bytes":  3735
+    },
+    {
+        "bundle_version":  "101",
+        "bundle_file":  "migrations/V101__backup_restore_and_disaster_recovery_evidence.sql",
+        "source_version":  "107",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V107__backup_restore_and_disaster_recovery_evidence.sql",
+        "bytes":  5023
+    },
+    {
+        "bundle_version":  "102",
+        "bundle_file":  "migrations/V102__schema_architecture_map_and_reference_rules.sql",
+        "source_version":  "108",
+        "domain":  "hardening",
+        "source_file":  "v091_v108_hardening_migrations/V108__schema_architecture_map_and_reference_rules.sql",
+        "bytes":  17264
+    }
+]

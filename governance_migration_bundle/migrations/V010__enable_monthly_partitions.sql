@@ -1,0 +1,27 @@
+-- OPTIONAL FUTURE MIGRATION PLAN
+-- Do not run blindly on a populated production table.
+-- This file documents the partitioning contract and example pattern.
+--
+-- High-growth tables that should eventually be partitioned monthly:
+--   evidence.audit_events
+--   evidence.execution_steps
+--   evidence.error_events
+--   archive.artifacts
+--   reporting.execution_reports
+--
+-- Future implementation pattern:
+--
+-- CREATE TABLE evidence.audit_events_partitioned (
+--   LIKE evidence.audit_events INCLUDING ALL
+-- ) PARTITION BY RANGE (created_at);
+--
+-- CREATE TABLE evidence.audit_events_2026_06
+--   PARTITION OF evidence.audit_events_partitioned
+--   FOR VALUES FROM ('2026-06-01') TO ('2026-07-01');
+--
+-- Production migration should:
+--   1. Create partitioned replacement table.
+--   2. Backfill by date range.
+--   3. Swap names in maintenance window.
+--   4. Recreate indexes/triggers.
+--   5. Validate row counts and hashes.
