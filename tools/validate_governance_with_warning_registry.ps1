@@ -13,7 +13,8 @@ $stdout = "$log.stdout"
 $stderr = "$log.stderr"
 Remove-Item -LiteralPath $stdout, $stderr -Force -ErrorAction SilentlyContinue
 
-$process = Start-Process -FilePath "powershell" `
+$childShell = if (Get-Command pwsh -ErrorAction SilentlyContinue) { "pwsh" } else { "powershell" }
+$process = Start-Process -FilePath $childShell `
     -ArgumentList @(
         "-NoProfile",
         "-ExecutionPolicy", "Bypass",
