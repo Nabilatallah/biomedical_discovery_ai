@@ -63,7 +63,7 @@ FROM governance_admin.regulated_database_readiness
 LIMIT 20;
 "@
 
-    $tmp = Join-Path $env:TEMP "bdai_performance_baseline.sql"
+    $tmp = Join-Path ([System.IO.Path]::GetTempPath()) "bdai_performance_baseline.sql"
     Set-Content -LiteralPath $tmp -Value $sql -Encoding UTF8
     docker compose cp $tmp postgres:/tmp/performance_baseline.sql
     if ($LASTEXITCODE -ne 0) { throw "performance SQL copy failed" }
