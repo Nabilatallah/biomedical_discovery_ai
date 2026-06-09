@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="banner01.png" alt="BioDiscoveryAI Banner" width="100%">
+  <img src=".github/banner01.png" alt="BioDiscoveryAI Banner" width="100%">
 </p>
 
 # biomedical_discovery_ai
