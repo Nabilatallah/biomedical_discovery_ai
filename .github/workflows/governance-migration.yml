@@ -1,0 +1,34 @@
+name: Governance Migration Validation
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install API test dependencies
+        working-directory: governance_migration_bundle/apps/governance-api
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Run API security tests
+        working-directory: governance_migration_bundle/apps/governance-api
+        run: python -m pytest tests
+
+      - name: Lint governance migration bundle
+        shell: pwsh
+        run: ./tools/lint_governance_migration_bundle.ps1
+
+      - name: Run Docker/Flyway/Postgres validation
+        shell: pwsh
+        run: ./tools/validate_governance_migration_bundle.ps1

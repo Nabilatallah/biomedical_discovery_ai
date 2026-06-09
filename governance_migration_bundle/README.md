@@ -80,6 +80,28 @@ The API will be available at:
 http://localhost:8008
 ```
 
+Flyway may emit expected idempotency warnings from the source migrations. The
+tracked warning classes and triage rule are documented in
+`../docs/FLYWAY_WARNING_REGISTRY.md`.
+
+## Governance API Security
+
+Readiness endpoints are unauthenticated. Mutating endpoints require an
+`X-Governance-API-Key` header whose value is listed in the comma-separated
+`GOVERNANCE_API_KEYS` environment variable. If no write keys are configured,
+mutating endpoints fail closed with HTTP 503.
+
+The Docker Compose stack configures a local-only development key:
+`bdai_dev_governance_key`.
+
+Run API security tests with:
+
+```powershell
+cd .\governance_migration_bundle\apps\governance-api
+python -m pip install -r requirements-dev.txt
+python -m pytest tests
+```
+
 ## Regression Validation
 
 Run this when changing migration sources, builder logic, validation, or bundle

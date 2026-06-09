@@ -51,3 +51,6 @@ for the hardening layer and is not a second deployment target.
    from the source archive, lints it, verifies generated SQL/seed/manifest
    parity with the committed bundle, then runs the full runtime validation
    against that rebuilt bundle.
+4. CI validation: `.github/workflows/governance-migration.yml` runs API
+   security tests, static bundle lint, and Docker/Flyway/Postgres validation on
+   pushes and pull requests.

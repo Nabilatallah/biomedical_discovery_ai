@@ -13,18 +13,41 @@ Run:
 from __future__ import annotations
 
 import os
+import secrets
 from typing import Any
 from uuid import UUID
 
 import psycopg
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, status
 from pydantic import BaseModel, Field
 
 
 def database_url() -> str | None:
     return os.getenv("DATABASE_URL") or os.getenv("BDAI_DATABASE_URL")
+
+
+def configured_api_keys() -> set[str]:
+    raw = os.getenv("GOVERNANCE_API_KEYS", "")
+    return {key.strip() for key in raw.split(",") if key.strip()}
+
+
+def require_write_api_key(x_governance_api_key: str | None = Header(default=None)) -> None:
+    keys = configured_api_keys()
+    if not keys:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="GOVERNANCE_API_KEYS is not configured for write operations",
+        )
+    if not x_governance_api_key or not any(
+        secrets.compare_digest(x_governance_api_key, key) for key in keys
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Valid X-Governance-API-Key header is required",
+        )
+
 
 app = FastAPI(
     title="BioDiscoveryAI Governance API",
@@ -34,35 +57,35 @@ app = FastAPI(
 
 
 class PackageCreate(BaseModel):
-    package_manager: str
-    package_name: str
-    package_version: str
-    package_description: str
-    inclusion_reason: str
-    functional_role: str
+    package_manager: str = Field(min_length=1, max_length=64)
+    package_name: str = Field(min_length=1, max_length=256)
+    package_version: str = Field(min_length=1, max_length=128)
+    package_description: str = Field(min_length=1, max_length=2000)
+    inclusion_reason: str = Field(min_length=1, max_length=2000)
+    functional_role: str = Field(min_length=1, max_length=256)
     security_risk_level: str = Field(pattern="^(low|medium|high|critical)$")
-    license_name: str | None = None
-    package_source_url: str | None = None
-    package_sha256: str | None = None
+    license_name: str | None = Field(default=None, max_length=256)
+    package_source_url: str | None = Field(default=None, max_length=2048)
+    package_sha256: str | None = Field(default=None, pattern="^[A-Fa-f0-9]{64}$")
 
 
 class EvidenceCreate(BaseModel):
     image_id: UUID
     build_id: UUID | None = None
-    evidence_type: str
-    evidence_tool: str
-    evidence_uri: str
-    evidence_sha256: str
-    evidence_summary: dict[str, Any] = Field(default_factory=dict)
+    evidence_type: str = Field(min_length=1, max_length=128)
+    evidence_tool: str = Field(min_length=1, max_length=128)
+    evidence_uri: str = Field(min_length=1, max_length=2048)
+    evidence_sha256: str = Field(pattern="^[A-Fa-f0-9]{64}$")
+    evidence_summary: dict[str, Any] = Field(default_factory=dict, max_length=100)
     pass_fail_status: str = Field(pattern="^(pass|fail|warning|accepted_risk)$")
-    generated_by: str
+    generated_by: str = Field(min_length=1, max_length=256)
 
 
 def conn():
     DATABASE_URL = database_url()
     if not DATABASE_URL:
         raise HTTPException(status_code=500, detail="DATABASE_URL/BDAI_DATABASE_URL is not configured")
-    return psycopg.connect(DATABASE_URL)
+    return psycopg.connect(DATABASE_URL, connect_timeout=5)
 
 
 @app.get("/health")
@@ -113,7 +136,7 @@ def container_lineage(image_id: UUID) -> dict[str, Any]:
     return {"image_id": str(image_id), "lineage": rows}
 
 
-@app.post("/packages")
+@app.post("/packages", dependencies=[Depends(require_write_api_key)])
 def create_package(payload: PackageCreate) -> dict[str, Any]:
     with conn() as c:
         with c.cursor(row_factory=dict_row) as cur:
@@ -152,7 +175,7 @@ def create_package(payload: PackageCreate) -> dict[str, Any]:
     return {"package_id": str(row["package_id"])}
 
 
-@app.post("/evidence")
+@app.post("/evidence", dependencies=[Depends(require_write_api_key)])
 def register_evidence(payload: EvidenceCreate) -> dict[str, Any]:
     with conn() as c:
         with c.cursor(row_factory=dict_row) as cur:

@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 $bundle = [System.IO.Path]::GetFullPath($BundleRoot)
 $migrationsDir = Join-Path $bundle "migrations"
 $manifestPath = Join-Path $bundle "manifest.csv"
-$seedPath = Join-Path $bundle "seeds\R__foundation_reference_seed.sql"
+$seedPath = Join-Path (Join-Path $bundle "seeds") "R__foundation_reference_seed.sql"
 
 if (-not (Test-Path -LiteralPath $migrationsDir)) {
     throw "Missing migrations directory: $migrationsDir"
