@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 import jwt
+from cryptography.hazmat.primitives.asymmetric import rsa
 from fastapi.testclient import TestClient
+from jwt import PyJWK
 
+from src import main
 from src.main import app
 
 
@@ -124,3 +128,53 @@ def test_payload_validation_rejects_bad_sha256_before_database(monkeypatch):
     response = client.post("/packages", json=payload, headers=auth_header(token))
 
     assert response.status_code == 422
+
+
+def rsa_key_pair(kid: str):
+    private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    public_jwk = json.loads(jwt.algorithms.RSAAlgorithm.to_jwk(private_key.public_key()))
+    public_jwk.update({"kid": kid, "use": "sig", "alg": "RS256"})
+    return private_key, public_jwk
+
+
+class RotatingJwksClient:
+    def __init__(self, keys: dict[str, dict[str, str]]):
+        self.keys = keys
+
+    def get_signing_key_from_jwt(self, token: str):
+        kid = jwt.get_unverified_header(token)["kid"]
+        return PyJWK(self.keys[kid])
+
+
+def rs256_token(private_key, kid: str, *, roles: list[str] | None = None) -> str:
+    now = datetime.now(timezone.utc)
+    claims = {
+        "iss": ISSUER,
+        "aud": AUDIENCE,
+        "sub": f"oidc-user-{kid}",
+        "iat": now,
+        "exp": now + timedelta(minutes=15),
+        "roles": roles or ["governance_reader"],
+    }
+    return jwt.encode(claims, private_key, algorithm="RS256", headers={"kid": kid})
+
+
+def test_oidc_jwks_accepts_rotated_signing_keys(monkeypatch):
+    monkeypatch.setenv("GOVERNANCE_JWT_ISSUER", ISSUER)
+    monkeypatch.setenv("GOVERNANCE_JWT_AUDIENCE", AUDIENCE)
+    monkeypatch.setenv("GOVERNANCE_OIDC_JWKS_URI", "https://auth.test/.well-known/jwks.json")
+    monkeypatch.delenv("GOVERNANCE_JWT_HS256_SECRET", raising=False)
+
+    old_private, old_public = rsa_key_pair("old-key")
+    new_private, new_public = rsa_key_pair("new-key")
+    monkeypatch.setattr(
+        main,
+        "jwks_client",
+        lambda _uri: RotatingJwksClient({"old-key": old_public, "new-key": new_public}),
+    )
+
+    old_principal = main.current_principal(type("Creds", (), {"scheme": "Bearer", "credentials": rs256_token(old_private, "old-key")})())
+    new_principal = main.current_principal(type("Creds", (), {"scheme": "Bearer", "credentials": rs256_token(new_private, "new-key")})())
+
+    assert old_principal.subject == "oidc-user-old-key"
+    assert new_principal.subject == "oidc-user-new-key"

@@ -6,3 +6,4 @@ venv/
 governance_migration_bundle/validation/*.log
 governance_migration_bundle/validation/*.log.*
 governance_migration_bundle/validation/release_evidence_packet.json
+governance_migration_bundle/validation/supply_chain/

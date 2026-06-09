@@ -4,6 +4,11 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -43,8 +48,36 @@ jobs:
 
       - name: Run performance baseline
         shell: pwsh
-        run: ./tools/run_performance_baseline.ps1 -EventCount 1000
+        run: ./tools/run_performance_baseline.ps1 -EventCount 1000 -MaxTotalSeconds 180
+
+      - name: Build governance API image
+        run: docker build -t governance-api:local-build governance_migration_bundle/apps/governance-api
+
+      - name: Generate SBOM and provenance summary
+        shell: pwsh
+        run: ./tools/generate_supply_chain_evidence.ps1
 
       - name: Generate release evidence packet
         shell: pwsh
         run: ./tools/generate_release_evidence_packet.ps1
+
+      - name: Run staging smoke test when configured
+        shell: pwsh
+        env:
+          STAGING_GOVERNANCE_API_URL: ${{ secrets.STAGING_GOVERNANCE_API_URL }}
+          STAGING_GOVERNANCE_BEARER_TOKEN: ${{ secrets.STAGING_GOVERNANCE_BEARER_TOKEN }}
+        run: ./tools/test_staging_smoke.ps1
+
+      - name: Upload release evidence artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: governance-release-evidence
+          path: |
+            governance_migration_bundle/validation/release_evidence_packet.json
+            governance_migration_bundle/validation/last_flyway_validation.log
+            governance_migration_bundle/validation/supply_chain/*.json
+
+      - name: Attest release evidence packet
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: governance_migration_bundle/validation/release_evidence_packet.json
